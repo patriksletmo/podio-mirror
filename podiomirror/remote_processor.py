@@ -1,9 +1,8 @@
-from PodioMirror.transaction import ADD_ITEM, MODIFY_ITEM, DELETE_ITEM, \
-    MODIFY_RELATION
-from PodioMirror.transaction_processor import TransactionProcessor
-
-from PodioMirror.src.transactions import NoOpTransaction
-from PodioMirror.src.transport import call_authenticated_endpoint, POST, PUT, DELETE, \
+from podiomirror.transaction_processor import TransactionProcessor
+from podiomirror.transactions.noop_transaction import NoOpTransaction
+from podiomirror.transactions.transaction import ADD_ITEM, MODIFY_ITEM, \
+    DELETE_ITEM, MODIFY_RELATION
+from podiomirror.transport import call_authenticated_endpoint, POST, PUT, DELETE, \
     GET
 
 

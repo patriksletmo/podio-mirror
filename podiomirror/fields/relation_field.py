@@ -1,4 +1,4 @@
-from PodioMirror.src.fields.field import Field
+from podiomirror.fields.field import Field
 
 
 class RelationField(Field):

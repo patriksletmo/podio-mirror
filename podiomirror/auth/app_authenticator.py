@@ -1,6 +1,5 @@
-from PodioMirror.authenticator import Authenticator
-
-from PodioMirror.src.auth.token import Token
+from podiomirror.auth.authenticator import Authenticator
+from podiomirror.auth.token import Token
 
 
 class AppAuthenticator(Authenticator):

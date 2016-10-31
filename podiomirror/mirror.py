@@ -1,12 +1,10 @@
-from PodioMirror.query import Select
-from PodioMirror.transaction import ADD_RELATION, REMOVE_RELATION, \
-    MODIFY_RELATION, ADD_ITEM, DELETE_ITEM, MODIFY_ITEM
-
-from PodioMirror.src.remote_data_store import RemoteDataStore
-from PodioMirror.src.transactions import \
+from podiomirror.query import Select
+from podiomirror.remote_data_store import RemoteDataStore
+from podiomirror.transactions.merged_relation_transaction import \
     MergedRelationTransaction
-from PodioMirror.src.transactions import NoOpTransaction
-from link_api.email import email_admins
+from podiomirror.transactions.noop_transaction import NoOpTransaction
+from podiomirror.transactions.transaction import ADD_RELATION, REMOVE_RELATION, \
+    ADD_ITEM, DELETE_ITEM, MODIFY_ITEM, MODIFY_RELATION
 
 instance = None
 
@@ -20,6 +18,7 @@ class PodioMirror:
         self.local_processor = None
         self.remote_processor = None
         self.local_data_store = None
+        self.sync_error_handler = None
 
         self.remote_data_store = RemoteDataStore()
         self.app_tokens = {}
@@ -67,10 +66,13 @@ class PodioMirror:
             transaction.mark_resolved_remotely(self.storage)
 
         if len(resolved_transactions) != len(transactions):
-            email_admins(
-                'LINK: Unresolved transactions',
-                'There are {} unresolved transactions which aborted the latest synchronization'.format(len(transactions) - len(resolved_transactions))
-            )
+            num_failed = len(transactions) - len(resolved_transactions)
+            error_message = 'There were {} unresolved transactions and the latest synchronization was aborted'.format(num_failed)
+            if self.sync_error_handler is None:
+                print(error_message)
+            else:
+                self.sync_error_handler(error_message)
+
             return
 
         # Fetch current data

@@ -1,6 +1,5 @@
-from PodioMirror.data_store import DataStore
-
-from PodioMirror.src.transport import call_authenticated_endpoint, POST, GET
+from podiomirror.data_store import DataStore
+from podiomirror.transport import call_authenticated_endpoint, GET, POST
 
 PODIO_REQUEST_ITEM_LIMIT = 500
 

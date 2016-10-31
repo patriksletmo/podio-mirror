@@ -1,4 +1,4 @@
-from PodioMirror.src.transactions.transaction import Transaction, NOOP_TRANSACTION
+from podiomirror.transactions.transaction import Transaction, NOOP_TRANSACTION
 
 
 class NoOpTransaction(Transaction):

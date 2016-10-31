@@ -1,6 +1,6 @@
 import json
 
-from PodioMirror.src.transactions.transaction import Transaction
+from podiomirror.transactions.transaction import Transaction
 
 
 class RelationTransaction(Transaction):

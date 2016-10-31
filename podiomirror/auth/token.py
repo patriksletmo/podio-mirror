@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from PodioMirror.src.transport import call_endpoint, POST
+from podiomirror.transport import call_endpoint, POST
 
 
 class Token:

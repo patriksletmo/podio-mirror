@@ -1,4 +1,4 @@
-from PodioMirror.src.transactions.transaction import Transaction, MODIFY_RELATION
+from podiomirror.transactions.transaction import Transaction, MODIFY_RELATION
 
 
 class MergedRelationTransaction(Transaction):
