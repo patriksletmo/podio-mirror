@@ -8,6 +8,6 @@ setup(
     author_email="patrik.sletmo@gmail.com",
     url="https://github.com/patriksletmo/podio-mirror",
     license="MIT",
-    packages=["podio-mirror"],
+    packages=["podiomirror"],
     install_requires=["requests"]
 )
