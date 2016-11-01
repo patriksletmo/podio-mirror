@@ -118,6 +118,8 @@ class PodioMirror:
                         merged_transaction.child_transactions.append(transaction)
                     elif merged_transaction.transaction_type == MODIFY_ITEM:
                         merged_transaction.item_data['fields'].update(transaction.item_data['fields'])
+                        if 'new_files' in transaction.item_data:
+                            merged_transaction.item_data['new_files'] = transaction.item_data['new_files']
                         merged_transaction.child_transactions.append(transaction)
                 else:
                     merged.append(transaction)

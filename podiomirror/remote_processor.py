@@ -37,6 +37,9 @@ class RemoteProcessor(TransactionProcessor):
             parameters = {
                 'fields': transaction.item_data['fields']
             }
+            if 'new_files' in transaction.item_data:
+                parameters['file_ids'] = [x['file_id'] for x in transaction.item_data['new_files']]
+
             call_authenticated_endpoint(token, endpoint, PUT, parameters)
         elif transaction.transaction_type == DELETE_ITEM:
             transaction.item_id = self.podio_id(transaction.item_id)
