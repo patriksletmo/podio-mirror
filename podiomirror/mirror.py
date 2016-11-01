@@ -49,9 +49,6 @@ class PodioMirror:
     def synchronize(self):
         # Upload changed data
         transactions = self.merged_transactions()
-        for t in transactions:
-            print(t.transaction_type)
-            print(t.item_data)
 
         tokens = {}
         for transaction in transactions:
