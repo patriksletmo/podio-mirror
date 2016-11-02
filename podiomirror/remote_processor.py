@@ -27,6 +27,9 @@ class RemoteProcessor(TransactionProcessor):
             parameters = {
                 'fields': transaction.item_data
             }
+
+            self.replace_relation_fields(parameters['fields'])
+
             response = call_authenticated_endpoint(token, endpoint, POST, parameters).json()
             new_item_id = response['item_id']
             self.id_mappings[transaction.item_id] = new_item_id
@@ -37,6 +40,9 @@ class RemoteProcessor(TransactionProcessor):
             parameters = {
                 'fields': transaction.item_data['fields']
             }
+
+            self.replace_relation_fields(parameters['fields'])
+
             if 'new_files' in transaction.item_data:
                 parameters['file_ids'] = [x['file_id'] for x in transaction.item_data['new_files']]
 
@@ -87,3 +93,10 @@ class RemoteProcessor(TransactionProcessor):
                 return field
 
         return None
+
+    def replace_relation_fields(self, fields):
+        # TODO: Fix a proper solution for this, this relies on the current local transaction processor implementation
+        for k, v in fields.items():
+            # Local ID field
+            if type(v) is str and v.startswith('LOCAL') and len(v) == 37:
+                fields[k] = self.podio_id(v)
