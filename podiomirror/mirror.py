@@ -57,8 +57,11 @@ class PodioMirror:
             if transaction.app_id not in tokens:
                 tokens[transaction.app_id] = self.app_token(transaction.app_id)
 
-        resolved_transactions = self.remote_processor.using_tokens(tokens)\
+        resolved_transactions = self.remote_processor\
+            .using_tokens(tokens)\
+            .using_resolver(self.local_data_store.find_remote_id)\
             .process_transactions(transactions)
+
         for transaction in resolved_transactions:
             transaction.mark_resolved_remotely(self.storage)
 

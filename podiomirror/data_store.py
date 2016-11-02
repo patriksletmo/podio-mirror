@@ -22,3 +22,6 @@ class DataStore(ABC):
         # TODO: Move out to new class LocalDataStore?
         raise NotImplementedError()
 
+    def find_remote_id(self, id):
+        # TODO: Move out to new class LocalDataStore?
+        raise NotImplementedError()

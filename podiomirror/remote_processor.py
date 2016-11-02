@@ -7,12 +7,16 @@ from podiomirror.transport import call_authenticated_endpoint, POST, PUT, DELETE
 
 
 class RemoteProcessor(TransactionProcessor):
-    def __init__(self, tokens=None):
+    def __init__(self, tokens=None, id_resolver=None):
         self.tokens = tokens
+        self.id_resolver = id_resolver
         self.id_mappings = {}
 
     def using_tokens(self, tokens):
-        return RemoteProcessor(tokens)
+        return RemoteProcessor(tokens, self.id_resolver)
+
+    def using_resolver(self, id_resolver):
+        return RemoteProcessor(self.tokens, id_resolver)
 
     def begin_processing(self, transactions):
         self.id_mappings = {}
@@ -83,6 +87,11 @@ class RemoteProcessor(TransactionProcessor):
     def podio_id(self, transaction_id):
         if transaction_id in self.id_mappings:
             return self.id_mappings[transaction_id]
+        elif self.id_resolver is not None:
+            if type(transaction_id) is str and transaction_id.startswith('LOCAL'):
+                match = self.id_resolver(transaction_id)
+                if match is not None:
+                    return match
         else:
             return transaction_id
 
