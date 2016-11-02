@@ -93,8 +93,8 @@ class RemoteProcessor(TransactionProcessor):
                 match = self.resolve_id(transaction_id)
                 if match is not None:
                     return match
-        else:
-            return transaction_id
+
+        return transaction_id
 
     def store_mapping(self, local_id, remote_id):
         self.id_mappings[local_id] = remote_id
