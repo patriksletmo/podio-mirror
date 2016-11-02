@@ -25,6 +25,7 @@ def call_endpoint(endpoint, method=GET, parameters=None, headers=None):
     else:
         raise RuntimeError('Unknown method')
 
+    _log_errors(response)
     response.raise_for_status()
     return response
 
@@ -37,3 +38,8 @@ def call_authenticated_endpoint(token, endpoint, method=GET, parameters=None, he
         headers['Content-Type'] = 'application/json'
 
     return call_endpoint(endpoint, method, json.dumps(parameters), headers)
+
+
+def _log_errors(response):
+    if 400 <= response.status_code < 500 or 500 <= response.status_code < 600:
+        print(response.text)
