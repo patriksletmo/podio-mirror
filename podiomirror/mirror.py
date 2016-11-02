@@ -59,7 +59,10 @@ class PodioMirror:
 
         resolved_transactions = self.remote_processor\
             .using_tokens(tokens)\
-            .using_resolver(self.local_data_store.find_remote_id)\
+            .using_mapping_store(
+                self.local_data_store.find_remote_id,
+                self.local_data_store.store_remote_id
+            )\
             .process_transactions(transactions)
 
         for transaction in resolved_transactions:

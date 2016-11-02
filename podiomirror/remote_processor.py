@@ -7,16 +7,17 @@ from podiomirror.transport import call_authenticated_endpoint, POST, PUT, DELETE
 
 
 class RemoteProcessor(TransactionProcessor):
-    def __init__(self, tokens=None, id_resolver=None):
+    def __init__(self, tokens=None, resolve_id=None, store_id=None):
         self.tokens = tokens
-        self.id_resolver = id_resolver
+        self.resolve_id = resolve_id
+        self.store_id = store_id
         self.id_mappings = {}
 
     def using_tokens(self, tokens):
-        return RemoteProcessor(tokens, self.id_resolver)
+        return RemoteProcessor(tokens, self.resolve_id, self.store_id)
 
-    def using_resolver(self, id_resolver):
-        return RemoteProcessor(self.tokens, id_resolver)
+    def using_mapping_store(self, resolve_id, store_id):
+        return RemoteProcessor(self.tokens, resolve_id, store_id)
 
     def begin_processing(self, transactions):
         self.id_mappings = {}
@@ -36,7 +37,7 @@ class RemoteProcessor(TransactionProcessor):
 
             response = call_authenticated_endpoint(token, endpoint, POST, parameters).json()
             new_item_id = response['item_id']
-            self.id_mappings[transaction.item_id] = new_item_id
+            self.store_mapping(transaction.item_id, new_item_id)
             transaction.item_id = new_item_id
         elif transaction.transaction_type == MODIFY_ITEM:
             transaction.item_id = self.podio_id(transaction.item_id)
@@ -87,13 +88,18 @@ class RemoteProcessor(TransactionProcessor):
     def podio_id(self, transaction_id):
         if transaction_id in self.id_mappings:
             return self.id_mappings[transaction_id]
-        elif self.id_resolver is not None:
+        elif self.resolve_id is not None:
             if type(transaction_id) is str and transaction_id.startswith('LOCAL'):
-                match = self.id_resolver(transaction_id)
+                match = self.resolve_id(transaction_id)
                 if match is not None:
                     return match
         else:
             return transaction_id
+
+    def store_mapping(self, local_id, remote_id):
+        self.id_mappings[local_id] = remote_id
+        if self.store_id is not None:
+            self.store_id(local_id, remote_id)
 
     @staticmethod
     def find_field(data, field_id):
