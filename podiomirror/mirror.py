@@ -50,6 +50,9 @@ class PodioMirror:
         # Upload changed data
         transactions = self.merged_transactions()
 
+        # Order item add transactions first to ensure relations work
+        transactions.sort(key=lambda x: x.transaction_type == 'add_item' and -1 or 0)
+
         tokens = {}
         for transaction in transactions:
             if type(transaction) is NoOpTransaction:
