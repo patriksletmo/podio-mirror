@@ -34,6 +34,7 @@ class RemoteProcessor(TransactionProcessor):
             }
 
             self.replace_relation_fields(parameters['fields'])
+            self.replace_empty_fields(parameters['fields'])
 
             response = call_authenticated_endpoint(token, endpoint, POST, parameters).json()
             new_item_id = response['item_id']
@@ -47,6 +48,7 @@ class RemoteProcessor(TransactionProcessor):
             }
 
             self.replace_relation_fields(parameters['fields'])
+            self.replace_empty_fields(parameters['fields'])
 
             if 'new_files' in transaction.item_data:
                 parameters['file_ids'] = [x['file_id'] for x in transaction.item_data['new_files']]
@@ -115,3 +117,9 @@ class RemoteProcessor(TransactionProcessor):
             # Local ID field
             if type(v) is str and v.startswith('LOCAL') and len(v) == 37:
                 fields[k] = self.podio_id(v)
+
+    # Podio does not like strings with length 0 and instead prefers null values
+    def replace_empty_fields(self, fields):
+        for k, v in fields.items():
+            if type(v) is str and len(v) == 0:
+                fields[k] = None
