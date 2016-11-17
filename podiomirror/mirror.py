@@ -89,9 +89,7 @@ class PodioMirror:
             self.local_data_store.store_app(app)
 
             items = remote_store.execute(Select().from_app(app_id))
-            self.local_data_store.clear_cache(app_id)
-            for item in items:
-                self.local_data_store.store_item(app_id, item)
+            self.local_data_store.update_cache(app_id, items)
 
     def merged_transactions(self):
         transactions = self.storage.stored_transactions()

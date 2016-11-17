@@ -18,6 +18,10 @@ class DataStore(ABC):
         # TODO: Move out to new class LocalDataStore?
         raise NotImplementedError()
 
+    def update_cache(self, app_id, items):
+        # TODO: Move out to new class LocalDataStore?
+        raise NotImplementedError()
+
     def store_app(self, app):
         # TODO: Move out to new class LocalDataStore?
         raise NotImplementedError()
